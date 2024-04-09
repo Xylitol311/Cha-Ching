@@ -57,4 +57,8 @@ public class User {
   @Column
   @LastModifiedDate
   private Date updatedAt;
+
+  public void verifyUserEmail() {
+    emailVerify = true;
+  }
 }
