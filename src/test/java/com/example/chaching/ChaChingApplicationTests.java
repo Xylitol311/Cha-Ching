@@ -1,10 +1,10 @@
-package com.example.ecommerce;
+package com.example.chaching;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ECommerceApplicationTests {
+class ChaChingApplicationTests {
 
     @Test
     void contextLoads() {
