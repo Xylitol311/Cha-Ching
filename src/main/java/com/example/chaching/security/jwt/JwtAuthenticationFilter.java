@@ -2,6 +2,7 @@ package com.example.chaching.security.jwt;
 
 import com.example.chaching.security.UserDetailServiceImpl;
 //import com.example.chaching.user.repository.LogoutAccessTokenRedisRepository;
+import com.example.chaching.user.repository.token.LogoutAccessTokenRedisRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,14 +27,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtTokenUtil jwtTokenUtil;
   private final UserDetailServiceImpl userDetailsService;
-//  private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
+  private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
     String accessToken = jwtTokenUtil.getToken(request);
     if (StringUtils.hasText(accessToken)) {
-//      checkLogout(accessToken);
+      checkLogout(accessToken);
       if (!jwtTokenUtil.validateToken(accessToken)) { // JWT 토큰 검증
         log.error("Token Error");
         return;
@@ -50,11 +51,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-//  private void checkLogout(String accessToken) {
-//    if (logoutAccessTokenRedisRepository.existsById(accessToken)) {
-//      throw new IllegalArgumentException("이미 로그아웃된 회원입니다.");
-//    }
-//  }
+  private void checkLogout(String accessToken) {
+    if (logoutAccessTokenRedisRepository.existsById(accessToken)) {
+      throw new IllegalArgumentException("이미 로그아웃된 회원입니다.");
+    }
+  }
 
   public void setAuthentication(String username) {
     // SecurityContextHolder : authentication을 담고 있는 Holder

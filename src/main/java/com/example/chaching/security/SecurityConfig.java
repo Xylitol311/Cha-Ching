@@ -2,7 +2,7 @@ package com.example.chaching.security;
 
 import com.example.chaching.security.jwt.JwtAuthenticationFilter;
 import com.example.chaching.security.jwt.JwtTokenUtil;
-//import com.example.chaching.user.repository.LogoutAccessTokenRedisRepository;
+import com.example.chaching.user.repository.token.LogoutAccessTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -27,7 +27,7 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtTokenUtil jwtTokenUtil;
   private final UserDetailServiceImpl userDetailService;
-//  private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
+  private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 
 
   // 인증처리를 위한 AuthenticaitonManager
@@ -42,18 +42,10 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-//  @Bean
-//  public JwtAuthenticationFilter jwtAuthorizationFilter() {
-//    return new JwtAuthenticationFilter(jwtTokenUtil, userDetailService,
-//        logoutAccessTokenRedisRepository);
-//  }
-
-  // h2 console Spring Security 제외 설정
   @Bean
-  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
-  public WebSecurityCustomizer configureH2ConsoleEnable() {
-    return web -> web.ignoring()
-        .requestMatchers(PathRequest.toH2Console());
+  public JwtAuthenticationFilter jwtAuthorizationFilter() {
+    return new JwtAuthenticationFilter(jwtTokenUtil, userDetailService,
+        logoutAccessTokenRedisRepository);
   }
 
   @Bean
